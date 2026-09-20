@@ -74,7 +74,35 @@ export default function OnboardingForm({ children }: OnboardingFormProps) {
   }
 
   if (user) {
-    return <>{children}</>;
+    const handleDevReset = () => {
+      const password = window.prompt("개발자 비밀번호를 입력해주세요.");
+
+      if (password === null) {
+        return;
+      }
+
+      if (password !== "0273") {
+        window.alert("비밀번호가 올바르지 않습니다.");
+        return;
+      }
+
+      localStorage.removeItem("hyangyeon-user");
+      window.location.reload();
+    };
+
+    return (
+      <>
+        {children}
+
+        <button
+          type="button"
+          onClick={handleDevReset}
+          className="fixed bottom-4 left-4 z-50 rounded-xl bg-black/70 px-3 py-2 text-xs font-semibold text-white"
+        >
+          개발용 초기화
+        </button>
+      </>
+    );
   }
 
   const canSubmit = /^\d{8}$/.test(studentId) && name.trim().length > 0;
@@ -92,6 +120,13 @@ export default function OnboardingForm({ children }: OnboardingFormProps) {
           <p className="mt-3 text-sm leading-6 text-ink-light">
             참여 정보를 입력하고 투어를 시작해보세요.
           </p>
+          <div className="mt-4 rounded-2xl border border-white/40 bg-white/25 px-4 py-3 backdrop-blur-lg">
+            <p className="text-xs leading-5 text-ink-light">
+              ⚠️ 입력한 학번과 이름은 투어 시작 후 수정할 수 없습니다.
+              <br />
+              정확한 정보를 입력해주세요.
+            </p>
+          </div>
         </div>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>

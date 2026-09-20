@@ -72,7 +72,18 @@ export default function Dashboard() {
         {showRewardConfetti && <ConfettiOverlay />}
         <header className="relative flex w-full shrink-0 flex-col items-center overflow-hidden rounded-[28px] border border-white/20 bg-white/5 p-5 text-center text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-3xl">
           <div className="flex w-full flex-col items-center gap-1">
-            <span className="shrink-0 whitespace-nowrap text-[clamp(8px,2.6vw,10px)] font-normal tracking-[0.3em] text-white/70 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
+            <div className="mb-1 flex items-center justify-center gap-2 text-[10px] text-white/90 ">
+              <span className="font-medium">
+                {user.studentId}
+              </span>
+
+              <span className="text-white/90">|</span>
+
+              <span className="font-medium">
+                {user.name}
+              </span>
+            </div>
+            <span className="shrink-0 whitespace-nowrap text-[clamp(8px,2.6vw,10px)] font-normal tracking-[0.3em] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
               2026 SOONCHUNHYANG UNIV
             </span>
 
@@ -83,7 +94,7 @@ export default function Dashboard() {
               향연 : 학술대동제
             </p>
 
-            <span className="mt-2 shrink-0 whitespace-nowrap text-[clamp(9px,2.8vw,11px)] font-normal tracking-widest text-white/60 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
+            <span className="mt-2 shrink-0 whitespace-nowrap text-[clamp(9px,2.8vw,11px)] font-normal tracking-widest text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
               흩어진 색을 모아, 하나의 향연으로
             </span>
           </div>
