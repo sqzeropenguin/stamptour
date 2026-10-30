@@ -8,6 +8,7 @@ export interface User {
 
 export interface Quiz {
   boothId: number;
+  department?: string;
   question: string;
   options: string[];
   answerIndex: number;

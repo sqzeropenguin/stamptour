@@ -68,7 +68,7 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="relative flex min-h-[max(650px,100dvh)] flex-col overflow-x-hidden overflow-y-auto px-4 py-3">
+    <main className="relative flex min-h-dvh flex-col overflow-x-hidden px-4 pt-3 pb-[calc(48px+env(safe-area-inset-bottom))]">
       {showRewardConfetti && <ConfettiOverlay />}
       <header className="relative flex w-full shrink-0 flex-col items-center overflow-hidden rounded-[28px] border border-white/20 bg-white/5 p-5 text-center text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-3xl">
         <div className="flex w-full flex-col items-center gap-1">
@@ -146,12 +146,12 @@ export default function Dashboard() {
       </div>
 
       {isAllClear && !user.rewardReceived && !isRewardModalOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 px-6 backdrop-blur-sm">
+        <div className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto bg-black/60 px-6 py-6 backdrop-blur-sm">
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="completion-title"
-            className="w-full max-w-sm rounded-[28px] border border-white/40 bg-[#F9F1FC] p-7 text-center shadow-2xl"
+            className="my-auto max-h-[calc(100dvh-48px)] w-full max-w-sm overflow-y-auto rounded-[28px] border border-white/40 bg-[#F9F1FC] p-7 text-center shadow-2xl"
           >
             <div className="mb-4 text-6xl">🎈🎉</div>
 
@@ -189,16 +189,6 @@ export default function Dashboard() {
           onConfirm={handleRewardConfirm}
         />
       )}
-
-      <div className="absolute bottom-0.5 left-1/2 z-30 -translate-x-1/2 text-center">
-        <button
-          type="button"
-          className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-[9px] tracking-wide text-white/35 transition hover:text-white/60 active:scale-95"
-          onClick={() => router.push("/quiz/1")}
-        >
-          테스트용 QR 스캔 (1번 부스)
-        </button>
-      </div>
     </main>
   );
 }

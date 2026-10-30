@@ -3,6 +3,9 @@ import Link from "next/link";
 import QuizScreen from "@/components/QuizScreen";
 import { mockQuizzes } from "@/lib/mockData";
 
+// QR 접속 요청마다 새 문제를 선택하도록 정적 캐싱을 방지합니다.
+export const dynamic = "force-dynamic";
+
 interface QuizPageProps {
   params: Promise<{
     boothId: string;
@@ -20,7 +23,7 @@ function InvalidBoothAccess() {
           잘못된 부스 접근입니다.
         </h1>
         <p className="mt-3 text-sm leading-6 text-white/70">
-          1번부터 6번 부스의 QR 코드를 다시 확인해주세요.
+          1번부터 8번 부스의 QR 코드를 다시 확인해주세요.
         </p>
         <Link
           href="/"
@@ -36,11 +39,13 @@ function InvalidBoothAccess() {
 export default async function QuizPage({ params }: QuizPageProps) {
   const { boothId } = await params;
   const parsedBoothId = Number(boothId);
-  const quiz = mockQuizzes.find((item) => item.boothId === parsedBoothId);
-
-  if (!quiz || !Number.isInteger(parsedBoothId)) {
+  if (!Number.isInteger(parsedBoothId) || parsedBoothId < 1 || parsedBoothId > 8) {
     return <InvalidBoothAccess />;
   }
 
-  return <QuizScreen quiz={quiz} />;
+  const quizzes = mockQuizzes.filter((item) => item.boothId === parsedBoothId);
+  if (quizzes.length === 0) return <InvalidBoothAccess />;
+
+  const quiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+  return <QuizScreen quiz={quiz} quizzes={quizzes} />;
 }

@@ -41,11 +41,25 @@ const CONFETTI_PIECES = Array.from({ length: 30 }, (_, index) => ({
 
 interface QuizScreenProps {
   quiz: Quiz;
+  quizzes: Quiz[];
+}
+
+function shuffleIndices(indices: number[]): number[] {
+  const shuffled = [...indices];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }
 
 type AnswerResult = "correct" | "incorrect" | null;
 
-export default function QuizScreen({ quiz }: QuizScreenProps) {
+export default function QuizScreen({ quiz: initialQuiz, quizzes }: QuizScreenProps) {
+  const [quiz, setQuiz] = useState(initialQuiz);
+  const remainingIndicesRef = useRef<number[]>([]);
+  const questionTimerRef = useRef<number | null>(null);
+  const [isChangingQuestion, setIsChangingQuestion] = useState(false);
   const router = useRouter();
   const [isHydrated, setIsHydrated] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -81,12 +95,15 @@ export default function QuizScreen({ quiz }: QuizScreenProps) {
       if (redirectTimerRef.current !== null) {
         window.clearTimeout(redirectTimerRef.current);
       }
+      if (questionTimerRef.current !== null) {
+        window.clearTimeout(questionTimerRef.current);
+      }
     },
     [],
   );
 
   const handleAnswer = (optionIndex: number) => {
-    if (!user || result === "correct") {
+    if (!user || result !== null || isChangingQuestion) {
       return;
     }
 
@@ -95,6 +112,23 @@ export default function QuizScreen({ quiz }: QuizScreenProps) {
     if (optionIndex !== quiz.answerIndex) {
       setResult("incorrect");
       setWrongAttempt((attempt) => attempt + 1);
+      setIsChangingQuestion(true);
+      questionTimerRef.current = window.setTimeout(() => {
+        if (quizzes.length > 1) {
+          if (remainingIndicesRef.current.length === 0) {
+            // 한 번씩 모두 출제한 뒤에만 다시 섞습니다.
+            remainingIndicesRef.current = shuffleIndices(
+              quizzes.map((_, index) => index).filter((index) => quizzes[index] !== quiz),
+            );
+          }
+          const nextIndex = remainingIndicesRef.current.shift();
+          if (nextIndex !== undefined) setQuiz(quizzes[nextIndex]);
+        }
+        setSelectedIndex(null);
+        setResult(null);
+        setIsChangingQuestion(false);
+        questionTimerRef.current = null;
+      }, 1100);
       return;
     }
 
@@ -182,6 +216,9 @@ export default function QuizScreen({ quiz }: QuizScreenProps) {
           <p className="text-[10px] font-medium tracking-[0.2em] text-white/60 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
             QUESTION
           </p>
+          {quiz.department && (
+            <p className="mt-3 text-xs font-semibold text-white/75">{quiz.department}</p>
+          )}
           <h2 className="mt-3 break-keep font-serif text-base font-medium leading-relaxed tracking-wide text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
             {quiz.question}
           </h2>
@@ -212,7 +249,7 @@ export default function QuizScreen({ quiz }: QuizScreenProps) {
                         : "border-white/30 bg-white/10 text-white hover:bg-white/20"
                     }`}
                   onClick={() => handleAnswer(optionIndex)}
-                  disabled={result === "correct"}
+                  disabled={result !== null || isChangingQuestion}
                 >
                   <span className="absolute left-4 flex h-7 w-7 items-center justify-center rounded-full border border-white/30 bg-white/10 text-[10px] font-bold">
                     {optionIndex + 1}
@@ -228,7 +265,7 @@ export default function QuizScreen({ quiz }: QuizScreenProps) {
             aria-live="polite"
           >
             {result === "incorrect" && (
-              <p className="text-rose-100">오답입니다. 다시 선택해주세요.</p>
+              <p className="text-rose-100">오답입니다. 다른 문제가 나옵니다!</p>
             )}
             {result === "correct" && (
               <p className="text-emerald-100">
