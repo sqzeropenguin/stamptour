@@ -11,9 +11,9 @@ export const mockUser: User = {
 export const mockQuizzes: Quiz[] = [
   {
     boothId: 1,
-    question: "순천향대학교가 위치한 도시는 어디일까요?",
-    options: ["천안시", "아산시", "공주시", "청주시"],
-    answerIndex: 1,
+    question: "건축학과의 건축전 이름은 ‘시제 사이’이다.",
+    options: ["O", "X"],
+    answerIndex: 0,
   },
   {
     boothId: 2,
@@ -45,4 +45,16 @@ export const mockQuizzes: Quiz[] = [
     options: ["시작", "진행 중", "완료", "대기"],
     answerIndex: 2,
   },
+  {
+  boothId: 7,
+  question: "7번 부스의 퀴즈 문제",
+  options: ["보기 1", "보기 2", "보기 3", "보기 4"],
+  answerIndex: 0,
+},
+{
+  boothId: 8,
+  question: "8번 부스의 퀴즈 문제",
+  options: ["보기 1", "보기 2", "보기 3", "보기 4"],
+  answerIndex: 0,
+},
 ];

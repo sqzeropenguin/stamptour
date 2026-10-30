@@ -19,7 +19,7 @@ import {
 } from "@/lib/userStorage";
 import type { Quiz } from "@/types";
 
-const TOTAL_BOOTHS = 6;
+const TOTAL_BOOTHS = 8;
 
 const CONFETTI_COLORS = [
   "#F6A39C",
@@ -186,7 +186,12 @@ export default function QuizScreen({ quiz }: QuizScreenProps) {
             {quiz.question}
           </h2>
 
-          <div className="mt-7 space-y-3">
+          <div
+            className={`mt-7 grid gap-3 ${quiz.options.length === 2
+                ? "grid-cols-2"
+                : "grid-cols-1"
+              }`}
+          >
             {quiz.options.map((option, optionIndex) => {
               const isSelected = selectedIndex === optionIndex;
               const isCorrect = isSelected && result === "correct";
@@ -200,13 +205,12 @@ export default function QuizScreen({ quiz }: QuizScreenProps) {
                       : optionIndex
                   }
                   type="button"
-                  className={`relative flex w-full items-center justify-center rounded-2xl border px-4 py-3.5 text-center text-sm font-semibold backdrop-blur-md transition ${
-                    isCorrect
+                  className={`relative flex w-full items-center justify-center rounded-2xl border px-4 py-3.5 text-center text-sm font-semibold backdrop-blur-md transition ${isCorrect
                       ? "border-emerald-200/70 bg-emerald-400/35 text-white"
                       : isIncorrect
                         ? "quiz-shake border-rose-200/70 bg-rose-400/35 text-white"
                         : "border-white/30 bg-white/10 text-white hover:bg-white/20"
-                  }`}
+                    }`}
                   onClick={() => handleAnswer(optionIndex)}
                   disabled={result === "correct"}
                 >
